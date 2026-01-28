@@ -7,6 +7,9 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { corsOptions } from './cors-configuration.js';
 
+//Rutas
+import fieldRoutes from '../fields/field.routes.js';
+
 // URL base para todas las rutas de la API
 
 const BASE_URL = '/kinalSportAdmin/v1';
@@ -27,6 +30,11 @@ const middlewares = (app) => {
 
 }
 
+const routes = (app) => {
+    app.use(`${BASE_URL}/fields`, fieldRoutes)
+}
+
+
 // Función para iniciar el servidor
 const initServer = async () => {
 
@@ -36,6 +44,7 @@ const initServer = async () => {
 
     try {
       middlewares(app);
+      routes(app);
 
          //PRIMERA RUTA
         app.get(`${BASE_URL}/health`, (req, res) => {

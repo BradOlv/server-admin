@@ -1,6 +1,6 @@
 
 'use strict';
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const fieldSchema = new mongoose.Schema({
     fieldName: {
@@ -49,6 +49,13 @@ const fieldSchema = new mongoose.Schema({
         default: true,
     }
 });
+
+//indices para optimizar las busquedas
+fieldSchema.index({ isActive: 1});
+fieldSchema.index({ fieldName: 1});
+fieldSchema.index({ isActive: 1, fieldName: 1});
+
+
 
 //exportamos el modelo con el nombre field
 export default  mongoose.model('Field', fieldSchema);
