@@ -4,55 +4,81 @@
 import Field from "./field.model.js";
 
 //Controles
-export const getFields = async (req, res) => {
+// Post controller
+export const createField = async (req, res) => {
     try {
+        const fieldData = req.body;
 
-        const { page = 1, limit = 10, isActive } = req.query;
+        if (req.file) {
+            const extension = req.file.path.split('.').pop();
+            const fileName = req.file.filename;
 
-        const filter = {isActive};
-
-        // opciones de paginación
-        const options = {
-            //convertimos a números
-            page: parseInt(page),
-            //convertimos a números
-            limit: parseInt(limit),
-            sort: {createdAt: -1 }
+            const relativePath = fileName.substring(
+                fileName.indexOf('fields/')
+            );
+            fieldData.photo = `${relativePath}.${extension}`;
+        } else {
+            fieldData.photo = 'fields/kinal_sport_nyvxo5';
         }
 
-        //realizar la consulta al schema field
-        const fields = await Field.find(filter)
-            .limit(limit)
-            .skip(( page - 1) * limit)
-            .sort(options.sort);
+        const field = new Field(fieldData);
+        await field.save();
 
-         // conteo de documentos de la consulta
-        const total = await Field.countDocuments(filter);
-
-        //respuesta
-        res.status(200).json({
+        res.status(201).json({
             success: true,
-            data: fields, 
-            pagination: {
-                currentPage: page,
-                totalPages: Math.ceil(total / limit),
-                totalRecords: total,
-                limit: limit, 
-
-
-
-            }
+            message: 'campo creado exitosamente',
+            data: field
         })
 
     } catch (error) {
-        res.status (500).json(
-            {
-                success: false,
-                message: 'error en campos',
-                error: error.message
-                
-            }
-        )
-
+        res.status(500).json({
+            success: false,
+            message: 'error al crear el campo',
+            error: error.message
+        })
     }
 }
+// Get controller - Para obtener todos los campos
+export const getFields = async (req, res) => {
+    try {
+        const fields = await Field.find();
+        res.status(200).json({
+            success: true,
+            total: fields.length,
+            fields
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener los campos',
+            error: error.message
+        });
+    }
+};
+// Get controller - Para obtener un campo por ID
+export const getFieldById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const field = await Field.findById(id);
+
+        if (!field) {
+            return res.status(404).json({
+                success: false,
+                message: 'Campo no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            field
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener el campo',
+            error: error.message
+        });
+    }
+};
+        // Recuerda agregar aquí tu res.status(500)...
+    

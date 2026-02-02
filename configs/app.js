@@ -6,9 +6,13 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import { corsOptions } from './cors-configuration.js';
+import { dbConnection } from './db.js';
 
 //Rutas
 import fieldRoutes from '../fields/field.routes.js';
+import equipoRoutes from '../fields/equipo.routes.js';
+import torneoRoutes from '../fields/torneo.routes.js';
+
 
 // URL base para todas las rutas de la API
 
@@ -31,7 +35,11 @@ const middlewares = (app) => {
 }
 
 const routes = (app) => {
-    app.use(`${BASE_URL}/fields`, fieldRoutes)
+    app.use(`${BASE_URL}/fields`, fieldRoutes);
+
+    app.use(`${BASE_URL}/teams`, equipoRoutes);
+
+    app.use(`${BASE_URL}/tournaments`, torneoRoutes);
 }
 
 
@@ -43,6 +51,7 @@ const initServer = async () => {
     const PORT = process.env.PORT || 3001;
 
     try {
+        dbConnection();
       middlewares(app);
       routes(app);
 

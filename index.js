@@ -1,9 +1,11 @@
 // importaciones
 import dotenv from 'dotenv'; 
-import { initServer } from './configs/app.js';
-
 //Configuración de variables de entorno
 dotenv.config();
+
+import { initServer } from './configs/app.js';
+import { dbConnection } from './configs/db.js';
+
 
 //errores no capturados
 process.on ('uncaughtException', (error) => {
@@ -20,6 +22,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 //Inicialización del servidor
 console.log('Iniciando servidor de KinalSport...');
+dbConnection();
 initServer();
 
 
