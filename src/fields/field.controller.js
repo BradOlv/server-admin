@@ -86,12 +86,18 @@ export const createField = async (req, res) => {
         const field = new Field(fieldData);
         await field.save();
 
-        res.status(201).json({
+       res.status(201).json({
             success: true,
             message: 'Campo creado exitosamente',
             data: field,
         });
     } catch (error) {
+        // INICIO DE LA MODIFICACIÓN PARA DEBUG
+        console.error("DETALLE DEL ERROR EN MONGODB:", error.message);
+        if (error.errors) {
+            console.error("ERRORES DE VALIDACIÓN:", Object.keys(error.errors).map(key => `${key}: ${error.errors[key].message}`));
+        }
+        // FIN DE LA MODIFICACIÓN PARA DEBUG
         res.status(400).json({
             success: false,
             message: 'Error al crear el campo',
