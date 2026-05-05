@@ -1,29 +1,25 @@
-// importaciones
-import dotenv from 'dotenv'; 
-//Configuración de variables de entorno
+
+//importaciones 
+import dotenv from 'dotenv';
+import { initServer } from './configs/app.js';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+//Configuracion de variables de entorno
 dotenv.config();
 
-import { initServer } from './configs/app.js';
-import { dbConnection } from './configs/db.js';
-
-
 //errores no capturados
-process.on ('uncaughtException', (error) => {
+process.on('uncaughtException', (error) =>{
     console.log(error);
     process.exit(1);
-
 });
 
 //Promesas rechazadas o no manejadas
 process.on('unhandledRejection', (reason, promise) => {
-    console.log (reason, promise);
-    process.exit(1);
-});
+        console.log(reason, promise);
+        process.exit(1);
+    });
 
-//Inicialización del servidor
-console.log('Iniciando servidor de KinalSport...');
-dbConnection();
-initServer();
-
-
-
+    //Inicializacion del servidor
+    console.log("Iniciando servidor de KinalSport...");
+    initServer();
+    
